@@ -41,7 +41,7 @@ save(activity:string){
     case 'pelicula':
       if (this.movieInput !== '') {
         title = 'El título';
-        const movie = `La película ${this.movieInput} se puede ver por ${this.selectedPlatform}`
+        const movie = `La película <b>${this.movieInput}</b> se puede ver por <b>${this.selectedPlatform}</b>`
         this.saveItem('movie',movie);
         this.movieInput='';
         this.showSuccessMessage(title);
@@ -104,8 +104,8 @@ saveItem(activity:string, value:string){
     window.localStorage.setItem(`${activity}`, value);
   }
   else{
-    let prueba = window.localStorage.getItem(activity);
-    let finalValue = prueba + ', ' + value;
+    let storedActivity = window.localStorage.getItem(activity);
+    let finalValue = storedActivity + ', ' + value;
     window.localStorage.setItem(`${activity}`, finalValue);
   }
 }
@@ -127,9 +127,8 @@ chooseRandom(){
 
   Swal.fire({
     title: "Cosas para hacer",
-    text: `Plan: ${finalSelectedPlan}, \n
-    Comida: ${finalSelectedFood}, \n
-    Película: ${finalSelectedMovie}`,
+    // text: `Plan: ${finalSelectedPlan},\nComida: ${finalSelectedFood},\nPelícula: ${finalSelectedMovie}`,
+    html: `<b>Plan:</b> ${finalSelectedPlan} <br> <b>Comida:</b> ${finalSelectedFood} <br> <b>Película:</b> ${finalSelectedMovie}`,
     icon: "success"
   });
 }
