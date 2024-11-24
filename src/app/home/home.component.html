@@ -1,0 +1,45 @@
+<div class="container-fluid d-flex align-items-center justify-content-center flex-column">
+    <h1>
+        Cosas para hacer
+    </h1>
+    <div class="row w-100">
+        <div class="card">
+            <div class="card-body">
+                <div class="input-group mb-3">
+                    <input type="text" [(ngModel)]="movieInput" class="form-control" placeholder="Qué te gustaría que veamos?" aria-label="Qué película te gustaría ver?" aria-describedby="button-movie">
+
+                    <select class="form-select" aria-label="Default select example" [(ngModel)]="selectedPlatform">
+                        <option selected>Seleccioná en qué plataforma se encuentra</option>
+                        @for (service of streamingServices; track service.name){
+                            <option value={{service.name}}>{{service.name}}</option>
+
+                        }
+                    </select>
+                    <button class="btn btn-outline-secondary" type="button" (click)="save('pelicula')">Guardar en lista</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row w-100">
+        <div class="card">
+            <div class="card-body">
+                <div class="input-group mb-3">
+                    <input type="text" [(ngModel)]="foodInput" class="form-control" placeholder="Qué te gustaría que comamos?" aria-label="Qué comida te gustaría comer?" aria-describedby="button-food">
+                    <button class="btn btn-outline-secondary" type="button" (click)="save('comida')">Guardar comida</button>
+                  </div>
+            </div>
+        </div>
+    </div>
+    <div class="row w-100">
+        <div class="card">
+            <div class="card-body">
+                <div class="input-group mb-3">
+                    <input type="text" [(ngModel)]="planInput" class="form-control" placeholder="Qué plan te gustaría que hagamos?" aria-label="Qué plan te gustaría que hagamos?" aria-describedby="button-plan">
+                    <button class="btn btn-outline-secondary" type="button" (click)="save('plan')">Guardar plan</button>
+                  </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <button class="btn btn-outline-secondary" type="button" (click)="chooseRandom()">Elegir al azar</button>
+</div>
