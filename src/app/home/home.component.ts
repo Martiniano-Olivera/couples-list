@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ListComponent } from '../list/list.component';
+import {MatDialog, MatDialogModule} from '@angular/material/dialog';
 import Swal from 'sweetalert2'
 @Component({
   selector: 'app-home',
-  imports: [FormsModule],
+  imports: [FormsModule, MatDialogModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
@@ -11,7 +13,7 @@ export class HomeComponent {
 movieInput:string = '';
 foodInput:string = '';
 planInput:string = '';
-selectedPlatform = '';
+selectedPlatform = 'Seleccioná en qué plataforma se encuentra';
 isDropdownOpen = false;
 streamingServices=[
   {
@@ -31,19 +33,27 @@ streamingServices=[
     owner: 'Nadie'
   },
   {
+    name: 'Mercado play',
+    owner: 'Martiniano'
+  },
+  {
     name: 'Ninguna de las anteriores',
     owner: 'Nadie'
   },
 ]
+
+constructor(private iMatDialog: MatDialog){}
+
 save(activity:string){
   let title:string = '';
   switch (activity) {
     case 'pelicula':
-      if (this.movieInput !== '') {
+      if (this.movieInput !== '' && this.selectedPlatform !== 'Seleccioná en qué plataforma se encuentra') {
         title = 'El título';
         const movie = `La película <b>${this.movieInput}</b> se puede ver por <b>${this.selectedPlatform}</b>`
         this.saveItem('movie',movie);
         this.movieInput='';
+        this.selectedPlatform = 'Seleccioná en qué plataforma se encuentra';
         this.showSuccessMessage(title);
       }
       else{
@@ -127,10 +137,11 @@ chooseRandom(){
 
   Swal.fire({
     title: "Cosas para hacer",
-    // text: `Plan: ${finalSelectedPlan},\nComida: ${finalSelectedFood},\nPelícula: ${finalSelectedMovie}`,
     html: `<b>Plan:</b> ${finalSelectedPlan} <br> <b>Comida:</b> ${finalSelectedFood} <br> <b>Película:</b> ${finalSelectedMovie}`,
     icon: "success"
   });
 }
-
+viewList(){
+  this.iMatDialog.open(ListComponent);
+}
 }

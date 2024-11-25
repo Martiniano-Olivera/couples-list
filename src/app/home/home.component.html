@@ -8,7 +8,7 @@
                 <div class="input-group mb-3">
                     <input type="text" [(ngModel)]="movieInput" class="form-control" placeholder="Qué te gustaría que veamos?" aria-label="Qué película te gustaría ver?" aria-describedby="button-movie">
 
-                    <select class="form-select" aria-label="Default select example" [(ngModel)]="selectedPlatform">
+                    <select class="form-select" [(ngModel)]="selectedPlatform">
                         <option selected>Seleccioná en qué plataforma se encuentra</option>
                         @for (service of streamingServices; track service.name){
                             <option value={{service.name}}>{{service.name}}</option>
@@ -41,5 +41,8 @@
         </div>
     </div>
     <br>
-    <button class="btn btn-outline-secondary" type="button" (click)="chooseRandom()">Elegir al azar</button>
+    <div class="w-100 d-flex justify-content-evenly">
+        <button class="btn btn-outline-secondary" type="button" (click)="chooseRandom()">Elegir al azar</button>
+        <button class="btn btn-outline-secondary" type="button" (click)="viewList()">Ver lista</button>    
+    </div>
 </div>
