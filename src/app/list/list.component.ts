@@ -5,23 +5,35 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DetailsComponent } from '../details/details.component';
 
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
+export interface Food {
+  food: string;
+  details:string;
+}
+export interface Movie {
+  movieName: string;
+  platformName: string;
+}
+export interface Plan {
+  plan: string;
+  details: string;
 }
 
-const ELEMENT_DATA: PeriodicElement[] = [
-  {position: 1, name: 'Hydrogen', weight: 1.0079},
-  {position: 2, name: 'Helium', weight: 4.0026},
-  {position: 3, name: 'Lithium', weight: 6.941},
-  {position: 4, name: 'Beryllium', weight: 9.0122},
-  {position: 5, name: 'Boron', weight: 10.811},
-  {position: 6, name: 'Carbon', weight: 12.0107},
-  {position: 7, name: 'Nitrogen', weight: 14.0067},
-  {position: 8, name: 'Oxygen', weight: 15.9994},
-  {position: 9, name: 'Fluorine', weight: 18.9984},
-  {position: 10, name: 'Neon', weight: 20.1797},
+const FOOD_DATA: Food[] = [
+  {food: 'pizza', details: 'Compre en X restaurante y no me gustaron'},
+  {food: 'empanadas', details: 'Compre en X restaurante y no me gustaron'},
+  {food: 'tarta', details: 'Compre en X restaurante y no me gustaron'}
+];
+
+const MOVIE_DATA: Movie[] = [
+{ movieName: 'Batman', platformName: 'Netflix'},
+{ movieName: 'SpiderMan', platformName: 'Netflix'},
+{ movieName: 'SuperMan', platformName: 'Netflix'},
+]
+
+const PLAN_DATA: Plan[] = [
+  {plan: 'Playa', details: 'Llevar off para los mosquitos'},
+  {plan: 'Montaña', details: 'Llevar mucha agua y curitas para las ampollas'},
+  {plan: 'Cine', details: 'Los miercoles está mas barato y los lunes está en inglés'}
 ];
 
 @Component({
@@ -34,14 +46,26 @@ const ELEMENT_DATA: PeriodicElement[] = [
 
 
 export class ListComponent {
-  displayedColumns: string[] = ['movie', 'food', 'plan'];
-  dataSource = new MatTableDataSource(ELEMENT_DATA);
+  displayedColumnsForFood : string[] = ['food', 'details'];
+  displayedColumnsForMovies : string[] = ['movie', 'platformName'];
+  displayedColumnsForPlans : string[] = ['plan', 'details'];
+  foodDataSource = new MatTableDataSource(FOOD_DATA);
+  movieDataSource = new MatTableDataSource(MOVIE_DATA);
+  planDataSource = new MatTableDataSource(PLAN_DATA);
 
   constructor(private iMatDialog: MatDialog){}
 
-  applyFilter(event: Event) {
+  filterFood(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+    this.foodDataSource.filter = filterValue.trim().toLowerCase();
+  }
+  filterMovies(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.movieDataSource.filter = filterValue.trim().toLowerCase();
+  }
+  filterPlans(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.planDataSource.filter = filterValue.trim().toLowerCase();
   }
   openDetails(activity:string){
     this.iMatDialog.open(DetailsComponent,{data:{activity}});

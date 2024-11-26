@@ -142,6 +142,10 @@ chooseRandom(){
   });
 }
 viewList(){
-  this.iMatDialog.open(ListComponent);
+  this.iMatDialog.open(ListComponent,{
+    width: '80%',
+    maxHeight: '90vh',
+    autoFocus: false,
+  });
 }
 }
