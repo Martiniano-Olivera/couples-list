@@ -13,7 +13,9 @@ export class HomeComponent {
 movieInput:string = '';
 foodInput:string = '';
 planInput:string = '';
+serieInput: string  = '';
 selectedPlatform = 'Seleccioná en qué plataforma se encuentra';
+selectedSeriesPlatform = 'Seleccioná en qué plataforma se encuentra';
 isDropdownOpen = false;
 streamingServices=[
   {
@@ -47,7 +49,7 @@ constructor(private iMatDialog: MatDialog){}
 save(activity:string){
   let title:string = '';
   switch (activity) {
-    case 'pelicula':
+    case 'película':
       if (this.movieInput !== '' && this.selectedPlatform !== 'Seleccioná en qué plataforma se encuentra') {
         title = 'El título';
         const movie = `La película <b>${this.movieInput}</b> se puede ver por <b>${this.selectedPlatform}</b>`
@@ -60,12 +62,25 @@ save(activity:string){
         this.showErrorMessage();
       }
       break;
+    case 'serie':
+      if (this.serieInput !== '' && this.selectedSeriesPlatform !== 'Seleccioná en qué plataforma se encuentra') {
+        title = 'El título';
+        const serie = `La serie <b>${this.serieInput}</b> se puede ver por <b>${this.selectedSeriesPlatform}</b>`
+        this.saveItem('series',serie);
+        this.serieInput='';
+        this.selectedSeriesPlatform = 'Seleccioná en qué plataforma se encuentra';
+        this.showSuccessMessage(title);
+      }
+      else{
+        this.showErrorMessage();
+      }
+      break;
     case 'comida':
       if (this.foodInput !== '') {
         title = 'La comida';
         this.saveItem('food',this.foodInput);
         this.foodInput='';
-        this.showSuccessMessage(title);          
+        this.showSuccessMessage(title);
       }
       else{
         this.showErrorMessage();

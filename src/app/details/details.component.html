@@ -1,7 +1,24 @@
-<h1>
+<div class="container d-flex flex-column justify-content-between">
+  <h1>
     Detalles de {{activity}}
-</h1>
+  </h1>
+<div class="inputsContainer">
 
-<h3>
-    {{activity}}
-</h3>
+  <mat-form-field class="h-25">
+    <mat-label>Nombre</mat-label>
+    <input matInput disabled value="{{name}}">
+  </mat-form-field>
+
+  <mat-form-field class="h-25">
+    <mat-label>
+      {{activity === 'película' || activity === 'serie'? 'Plataforma' : 'Detalles'}}
+    </mat-label>
+    <input matInput type="text" [(ngModel)]="editableInformation">
+      <button matSuffix mat-icon-button aria-label="Clear" (click)="editableInformation=originalEditableInformation">
+        <mat-icon>close</mat-icon>
+      </button>
+  </mat-form-field>
+</div>
+
+  <button class="btn btn-outline-secondary h-25" type="button" (click)="saveChanges()">Guardar cambios</button>
+</div>

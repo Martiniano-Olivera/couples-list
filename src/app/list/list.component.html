@@ -1,25 +1,50 @@
 <div class="mat-dialog-content">
 
     <mat-form-field>
-      <mat-label>Busca la pelicula/serie que quieras</mat-label>
+      <mat-label>Busca la película que quieras</mat-label>
       <input matInput (keyup)="filterMovies($event)" #movieInput>
     </mat-form-field>
-    
+
     <table mat-table [dataSource]="movieDataSource" class="mat-elevation-z8">
-    
+
       <ng-container matColumnDef="movie">
-        <th mat-header-cell *matHeaderCellDef> Pelicula/serie </th>
-        <td mat-cell *matCellDef="let element" (click)="openDetails('movie')"> {{element.movieName}} </td>
+        <th mat-header-cell *matHeaderCellDef> Película/serie </th>
+        <td mat-cell *matCellDef="let element" (click)="openDetails('película', element.movieName, element.platformName)"> {{element.movieName}} </td>
       </ng-container>
 
       <ng-container matColumnDef="platformName">
         <th mat-header-cell *matHeaderCellDef> Plataforma </th>
-        <td mat-cell *matCellDef="let element" (click)="openDetails('movie')"> {{element.platformName}} </td>
+        <td mat-cell *matCellDef="let element" (click)="openDetails('película', element.movieName, element.platformName)"> {{element.platformName}} </td>
       </ng-container>
-    
+
       <tr mat-header-row *matHeaderRowDef="displayedColumnsForMovies"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumnsForMovies;"></tr>
-    
+
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" colspan="4">No data matching the filter "{{movieInput.value}}"</td>
+      </tr>
+    </table>
+
+  <mat-form-field>
+      <mat-label>Busca la serie que quieras</mat-label>
+      <input matInput (keyup)="filterSeries($event)" #movieInput>
+    </mat-form-field>
+
+    <table mat-table [dataSource]="seriesDataSource" class="mat-elevation-z8">
+
+      <ng-container matColumnDef="series">
+        <th mat-header-cell *matHeaderCellDef> Serie </th>
+        <td mat-cell *matCellDef="let element" (click)="openDetails('serie', element.seriesName, element.platformName)"> {{element.seriesName}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="platformName">
+        <th mat-header-cell *matHeaderCellDef> Plataforma </th>
+        <td mat-cell *matCellDef="let element" (click)="openDetails('serie', element.seriesName, element.platformName)"> {{element.platformName}} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsForSeries"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsForSeries;"></tr>
+
       <tr class="mat-row" *matNoDataRow>
         <td class="mat-cell" colspan="4">No data matching the filter "{{movieInput.value}}"</td>
       </tr>
@@ -30,22 +55,22 @@
       <mat-label>Busca el plato que quieras</mat-label>
       <input matInput (keyup)="filterFood($event)" #foodInput>
     </mat-form-field>
-    
+
     <table mat-table [dataSource]="foodDataSource" class="mat-elevation-z8">
-    
+
       <ng-container matColumnDef="food">
         <th mat-header-cell *matHeaderCellDef> Nombre del plato </th>
-        <td mat-cell *matCellDef="let element" (click)="openDetails('food')"> {{element.food}} </td>
+        <td mat-cell *matCellDef="let element" (click)="openDetails('comida', element.food, element.details)"> {{element.food}} </td>
       </ng-container>
 
       <ng-container matColumnDef="details">
         <th mat-header-cell *matHeaderCellDef> Detalles </th>
-        <td mat-cell *matCellDef="let element" (click)="openDetails('food')"> {{element.details}} </td>
+        <td mat-cell *matCellDef="let element" (click)="openDetails('comida', element.food, element.details)"> {{element.details}} </td>
       </ng-container>
-    
+
       <tr mat-header-row *matHeaderRowDef="displayedColumnsForFood"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumnsForFood;"></tr>
-    
+
       <tr class="mat-row" *matNoDataRow>
         <td class="mat-cell" colspan="4">No data matching the filter "{{foodInput.value}}"</td>
       </tr>
@@ -56,22 +81,22 @@
       <mat-label>Busca el plan que quieras</mat-label>
       <input matInput (keyup)="filterPlans($event)" #planInput>
     </mat-form-field>
-    
+
     <table mat-table [dataSource]="planDataSource" class="mat-elevation-z8">
-    
+
       <ng-container matColumnDef="plan">
         <th mat-header-cell *matHeaderCellDef> Plan </th>
-        <td mat-cell *matCellDef="let element" (click)="openDetails('plan')"> {{element.plan}} </td>
+        <td mat-cell *matCellDef="let element" (click)="openDetails('plan', element.plan, element.details)"> {{element.plan}} </td>
       </ng-container>
 
       <ng-container matColumnDef="details">
         <th mat-header-cell *matHeaderCellDef> Plan </th>
-        <td mat-cell *matCellDef="let element" (click)="openDetails('plan')"> {{element.details}} </td>
+        <td mat-cell *matCellDef="let element" (click)="openDetails('plan', element.plan, element.details)"> {{element.details}} </td>
       </ng-container>
-    
+
       <tr mat-header-row *matHeaderRowDef="displayedColumnsForPlans"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumnsForPlans;"></tr>
-    
+
       <tr class="mat-row" *matNoDataRow>
         <td class="mat-cell" colspan="4">No data matching the filter "{{planInput.value}}"</td>
       </tr>

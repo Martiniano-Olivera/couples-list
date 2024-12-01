@@ -6,7 +6,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="input-group mb-3">
-                    <input type="text" [(ngModel)]="movieInput" class="form-control" placeholder="Qué te gustaría que veamos?" aria-label="Qué película te gustaría ver?" aria-describedby="button-movie">
+                    <input type="text" [(ngModel)]="movieInput" class="form-control" placeholder="Qué película te gustaría que veamos?" aria-label="Qué película te gustaría ver?" aria-describedby="button-movie">
 
                     <select class="form-select" [(ngModel)]="selectedPlatform">
                         <option selected>Seleccioná en qué plataforma se encuentra</option>
@@ -15,11 +15,29 @@
 
                         }
                     </select>
-                    <button class="btn btn-outline-secondary" type="button" (click)="save('pelicula')">Guardar en lista</button>
+                    <button class="btn btn-outline-secondary" type="button" (click)="save('película')">Guardar película</button>
                 </div>
             </div>
         </div>
     </div>
+  <div class="row w-100">
+    <div class="card">
+      <div class="card-body">
+        <div class="input-group mb-3">
+          <input type="text" [(ngModel)]="serieInput" class="form-control" placeholder="Qué serie te gustaría que veamos?" aria-label="Qué serie te gustaría ver?" aria-describedby="button-serie">
+
+          <select class="form-select" [(ngModel)]="selectedSeriesPlatform">
+            <option selected>Seleccioná en qué plataforma se encuentra</option>
+            @for (service of streamingServices; track service.name){
+              <option value={{service.name}}>{{service.name}}</option>
+
+            }
+          </select>
+          <button class="btn btn-outline-secondary" type="button" (click)="save('serie')">Guardar serie</button>
+        </div>
+      </div>
+    </div>
+  </div>
     <div class="row w-100">
         <div class="card">
             <div class="card-body">
@@ -43,6 +61,6 @@
     <br>
     <div class="w-100 d-flex justify-content-evenly">
         <button class="btn btn-outline-secondary" type="button" (click)="chooseRandom()">Elegir al azar</button>
-        <button class="btn btn-outline-secondary" type="button" (click)="viewList()">Ver lista</button>    
+        <button class="btn btn-outline-secondary" type="button" (click)="viewList()">Ver lista</button>
     </div>
 </div>
