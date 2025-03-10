@@ -1,10 +1,15 @@
 table {
   width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
 }
 
 .mat-mdc-form-field {
   font-size: 14px;
   width: 100%;
+  margin-bottom: 16px;
 }
 
 .mat-dialog-content {
@@ -13,5 +18,66 @@ table {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  padding: 24px;
+  background: linear-gradient(to bottom right, #ffffff, #f8f9fa);
+  border-radius: 12px;
+}
+
+// Estilos para las filas de la tabla
+.mat-row {
+  transition: background-color 0.2s ease;
+  
+  &:hover {
+    background-color: rgba(233, 236, 239, 0.5) !important;
+    cursor: pointer;
+  }
+}
+
+// Estilos para los encabezados
+.mat-header-cell {
+  background-color: #f1f3f5;
+  color: #495057;
+  font-weight: 600;
+  padding: 16px;
+}
+
+// Estilos para las celdas
+.mat-cell {
+  color: #495057;
+  padding: 12px 16px;
+}
+
+// Estilo para el input de búsqueda
+.mat-form-field {
+  .mat-input-element {
+    color: #495057;
+  }
+  
+  .mat-form-field-label {
+    color: #6c757d;
+  }
+  
+  .mat-form-field-underline {
+    background-color: #dee2e6;
+  }
+}
+
+// Animación suave para el diálogo
+::ng-deep .mat-dialog-container {
+  border-radius: 12px !important;
+  padding: 24px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+  animation: dialogFadeIn 0.3s ease-out;
+}
+
+@keyframes dialogFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 

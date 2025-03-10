@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { ListComponent } from '../list/list.component';
 import {MatDialog, MatDialogModule} from '@angular/material/dialog';
 import Swal from 'sweetalert2'
+import {Activity} from "../shared/classes/activity";
 @Component({
   selector: 'app-home',
   imports: [FormsModule, MatDialogModule],
@@ -51,8 +52,9 @@ save(activity:string){
   switch (activity) {
     case 'película':
       if (this.movieInput !== '' && this.selectedPlatform !== 'Seleccioná en qué plataforma se encuentra') {
-        title = 'El título';
-        const movie = `La película <b>${this.movieInput}</b> se puede ver por <b>${this.selectedPlatform}</b>`
+        title = 'La película';
+        // const movie = `La película <b>${this.movieInput}</b> se puede ver por <b>${this.selectedPlatform}</b>`
+        const movie = new Activity(this.movieInput,this.selectedPlatform);
         this.saveItem('movie',movie);
         this.movieInput='';
         this.selectedPlatform = 'Seleccioná en qué plataforma se encuentra';
@@ -64,8 +66,8 @@ save(activity:string){
       break;
     case 'serie':
       if (this.serieInput !== '' && this.selectedSeriesPlatform !== 'Seleccioná en qué plataforma se encuentra') {
-        title = 'El título';
-        const serie = `La serie <b>${this.serieInput}</b> se puede ver por <b>${this.selectedSeriesPlatform}</b>`
+        title = 'La serie';
+        const serie = new Activity(this.serieInput,this.selectedSeriesPlatform);
         this.saveItem('series',serie);
         this.serieInput='';
         this.selectedSeriesPlatform = 'Seleccioná en qué plataforma se encuentra';
@@ -78,7 +80,8 @@ save(activity:string){
     case 'comida':
       if (this.foodInput !== '') {
         title = 'La comida';
-        this.saveItem('food',this.foodInput);
+        const food = new Activity(this.foodInput);
+        this.saveItem('food',food);
         this.foodInput='';
         this.showSuccessMessage(title);
       }
@@ -89,7 +92,8 @@ save(activity:string){
     case 'plan':
       if (this.planInput !== '') {
         title = 'El plan';
-        this.saveItem('plan',this.planInput);
+        const plan = new Activity(this.planInput);
+        this.saveItem('plan',plan);
         this.planInput='';
         this.showSuccessMessage(title);
       }
@@ -124,14 +128,44 @@ showSuccessMessage(title:string){
   });
 }
 
-saveItem(activity:string, value:string){
-  if (window.localStorage.getItem(activity) === null){
-    window.localStorage.setItem(`${activity}`, value);
+//! Esto podría ser refactorizable tranquilamente. Hay un método "Save" que después llama a este método saveItem.
+//! Para lo unico que sirve saveItem es por el tema del id autoincremental que hay en el modelo Activity. 
+//! Se podría refactorizar para que el id se genere en el método save y no en el saveItem.
+//! Lo ideal sería manejarlo por el lado del backend, pero como no hay backend, se podría hacer en el front.
+//! De momento se va a hacer que funcione así, una vez que funcione bien de esta forma se empezará a trabajar sobre su refactorización.
+//! Paso a paso dijo mostaza.
+ saveItem(activityName:string, activity:Activity){
+  console.log(activity);
+  const storedActivity = window.localStorage.getItem(activityName);
+  // if (window.localStorage.getItem(activityName) === null){
+    let name:string = '';
+  switch (activityName) {
+    case 'movie':
+      name = `La película <b>${this.movieInput}</b> tiene el identificador ${activity.id} y se puede ver por <b>${this.selectedPlatform}</b>`
+      
+      break;
+    case 'series':
+      name = `La serie <b>${this.serieInput}</b> tiene el identificador ${activity.id} y se puede ver por <b>${this.selectedSeriesPlatform}</b>`    
+      break;
+    case 'food':
+      name = `La comida es <b>${this.foodInput}</b> y tiene el identificador ${activity.id}`
+      break;
+    case 'plan':
+    name = `El plan es <b>${this.planInput}</b> y tiene el identificador ${activity.id}`
+      break;
+    default:
+      break;
+  }
+
+  if (storedActivity === null){
+    // const value = JSON.stringify((activity.name)) + ', ' + JSON.stringify(activity.information) + ', ' + activity.id;
+    // window.localStorage.setItem(activityName, value);
+    window.localStorage.setItem(activityName, name);
   }
   else{
-    let storedActivity = window.localStorage.getItem(activity);
-    let finalValue = storedActivity + ', ' + value;
-    window.localStorage.setItem(`${activity}`, finalValue);
+    // const value =  JSON.stringify((activity.name)) + ', ' + JSON.stringify(activity.information);
+    let finalValue = storedActivity + ', ' + name ;
+    window.localStorage.setItem(activityName, finalValue);
   }
 }
 

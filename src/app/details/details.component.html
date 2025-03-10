@@ -1,24 +1,32 @@
-<div class="container d-flex flex-column justify-content-between">
-  <h1>
-    Detalles de {{activity}}
-  </h1>
-<div class="inputsContainer">
+<div class="container">
+  <h2 class="mb-4">Detalles de {{activity}}</h2>
 
-  <mat-form-field class="h-25">
-    <mat-label>Nombre</mat-label>
-    <input matInput disabled value="{{name}}">
-  </mat-form-field>
+  <div class="form-content">
+    <mat-form-field class="w-100 mb-3">
+      <mat-label>Nombre</mat-label>
+      <input matInput disabled [value]="name">
+    </mat-form-field>
 
-  <mat-form-field class="h-25">
-    <mat-label>
-      {{activity === 'película' || activity === 'serie'? 'Plataforma' : 'Detalles'}}
-    </mat-label>
-    <input matInput type="text" [(ngModel)]="editableInformation">
-      <button matSuffix mat-icon-button aria-label="Clear" (click)="editableInformation=originalEditableInformation">
+    <mat-form-field class="w-100">
+      <mat-label>
+        {{activity === 'película' || activity === 'serie' ? 'Plataforma' : 'Detalles'}}
+      </mat-label>
+      <textarea matInput
+                [(ngModel)]="editableInformation"
+                placeholder="Ingresa los detalles aquí..."
+                rows="3"></textarea>
+      <button *ngIf="editableInformation"
+              matSuffix
+              mat-icon-button
+              aria-label="Limpiar"
+              (click)="editableInformation=''">
         <mat-icon>close</mat-icon>
       </button>
-  </mat-form-field>
-</div>
+    </mat-form-field>
+  </div>
 
-  <button class="btn btn-outline-secondary h-25" type="button" (click)="saveChanges()">Guardar cambios</button>
+  <div class="actions mt-4">
+    <button mat-button color="warn" (click)="cancel()">Cancelar</button>
+    <button mat-raised-button color="primary" (click)="saveChanges()">Guardar cambios</button>
+  </div>
 </div>

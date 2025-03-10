@@ -8,13 +8,13 @@
     <table mat-table [dataSource]="movieDataSource" class="mat-elevation-z8">
 
       <ng-container matColumnDef="movie">
-        <th mat-header-cell *matHeaderCellDef> Película/serie </th>
-        <td mat-cell *matCellDef="let element" (click)="openDetails('película', element.movieName, element.platformName)"> {{element.movieName}} </td>
+        <th mat-header-cell *matHeaderCellDef> Película </th>
+        <td mat-cell *matCellDef="let element" (click)="openDetails('película', element.name, element.information)"> {{element.name}} </td>
       </ng-container>
 
       <ng-container matColumnDef="platformName">
         <th mat-header-cell *matHeaderCellDef> Plataforma </th>
-        <td mat-cell *matCellDef="let element" (click)="openDetails('película', element.movieName, element.platformName)"> {{element.platformName}} </td>
+        <td mat-cell *matCellDef="let element" (click)="openDetails('película', element.name, element.information)"> {{element.information}} </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumnsForMovies"></tr>
@@ -34,12 +34,12 @@
 
       <ng-container matColumnDef="series">
         <th mat-header-cell *matHeaderCellDef> Serie </th>
-        <td mat-cell *matCellDef="let element" (click)="openDetails('serie', element.seriesName, element.platformName)"> {{element.seriesName}} </td>
+        <td mat-cell *matCellDef="let element" (click)="openDetails('serie', element.name, element.information)"> {{element.name}} </td>
       </ng-container>
 
       <ng-container matColumnDef="platformName">
         <th mat-header-cell *matHeaderCellDef> Plataforma </th>
-        <td mat-cell *matCellDef="let element" (click)="openDetails('serie', element.seriesName, element.platformName)"> {{element.platformName}} </td>
+        <td mat-cell *matCellDef="let element" (click)="openDetails('serie', element.name, element.information)"> {{element.information}} </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumnsForSeries"></tr>
@@ -60,12 +60,12 @@
 
       <ng-container matColumnDef="food">
         <th mat-header-cell *matHeaderCellDef> Nombre del plato </th>
-        <td mat-cell *matCellDef="let element" (click)="openDetails('comida', element.food, element.details)"> {{element.food}} </td>
+        <td mat-cell *matCellDef="let element" (click)="openDetails('comida', element.name, element.information)"> {{element.name}} </td>
       </ng-container>
 
       <ng-container matColumnDef="details">
         <th mat-header-cell *matHeaderCellDef> Detalles </th>
-        <td mat-cell *matCellDef="let element" (click)="openDetails('comida', element.food, element.details)"> {{element.details}} </td>
+        <td mat-cell *matCellDef="let element" (click)="openDetails('comida', element.name, element.information)"> {{element.information}} </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumnsForFood"></tr>
@@ -86,12 +86,12 @@
 
       <ng-container matColumnDef="plan">
         <th mat-header-cell *matHeaderCellDef> Plan </th>
-        <td mat-cell *matCellDef="let element" (click)="openDetails('plan', element.plan, element.details)"> {{element.plan}} </td>
+        <td mat-cell *matCellDef="let element" (click)="openDetails('plan', element.name, element.information)"> {{element.name}} </td>
       </ng-container>
 
       <ng-container matColumnDef="details">
         <th mat-header-cell *matHeaderCellDef> Plan </th>
-        <td mat-cell *matCellDef="let element" (click)="openDetails('plan', element.plan, element.details)"> {{element.details}} </td>
+        <td mat-cell *matCellDef="let element" (click)="openDetails('plan', element.name, element.information)"> {{element.information}} </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumnsForPlans"></tr>

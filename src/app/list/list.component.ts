@@ -4,24 +4,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DetailsComponent } from '../details/details.component';
-
-export interface Food {
-  food: string;
-  details:string;
-}
-export interface Movie {
-  movieName: string;
-  platformName: string;
-}
-export interface Series {
-  seriesName: string;
-  platformName: string;
-}
-export interface Plan {
-  plan: string;
-  details: string;
-}
-
+import {Activity} from "../shared/classes/activity";
 
 
 @Component({
@@ -35,10 +18,10 @@ export interface Plan {
 
 export class ListComponent implements OnInit {
 
-  MOVIE_DATA: Movie[] = [];
-  SERIES_DATA: Series[] = [];
-  FOOD_DATA: Food[] = [];
-  PLAN_DATA: Plan[] = [];
+  MOVIE_DATA: Activity[] = [];
+  SERIES_DATA: Activity[] = [];
+  FOOD_DATA: Activity[] = [];
+  PLAN_DATA: Activity[] = [];
   displayedColumnsForFood : string[] = ['food', 'details'];
   displayedColumnsForMovies : string[] = ['movie', 'platformName'];
   displayedColumnsForSeries : string[] = ['series', 'platformName'];
@@ -78,86 +61,178 @@ export class ListComponent implements OnInit {
     this.planDataSource.filter = filterValue.trim().toLowerCase();
   }
   openDetails(activity: string, name: string, details: string) {
-    console.log(details)
-    this.iMatDialog.open(DetailsComponent,{
-      data:{
-        title:activity,
-        description:name,
-        extraInfo:details
+    const dialogRef = this.iMatDialog.open(DetailsComponent, {
+      data: {
+        title: activity,
+        description: name,
+        extraInfo: details
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.saveDetails(activity, name, result);
+        this.updateDataSource(activity, name, result);
       }
     });
   }
 
+  updateDataSource(activity: string, name: string, details: string) {
+    switch(activity) {
+      case 'película':
+        const movieIndex = this.MOVIE_DATA.findIndex(movie => movie.name === name);
+        if (movieIndex !== -1) {
+          this.MOVIE_DATA[movieIndex].information = details;
+          this.movieDataSource.data = [...this.MOVIE_DATA];
+        }
+        break;
+      case 'serie':
+        const serieIndex = this.SERIES_DATA.findIndex(serie => serie.name === name);
+        if (serieIndex !== -1) {
+          this.SERIES_DATA[serieIndex].information = details;
+          this.seriesDataSource.data = [...this.SERIES_DATA];
+        }
+        break;
+      case 'comida':
+        const foodIndex = this.FOOD_DATA.findIndex(food => food.name === name);
+        if (foodIndex !== -1) {
+          this.FOOD_DATA[foodIndex].information = details;
+          this.foodDataSource.data = [...this.FOOD_DATA];
+        }
+        break;
+      case 'plan':
+        const planIndex = this.PLAN_DATA.findIndex(plan => plan.name === name);
+        if (planIndex !== -1) {
+          this.PLAN_DATA[planIndex].information = details;
+          this.planDataSource.data = [...this.PLAN_DATA];
+        }
+        break;
+    }
+  }
+
   getMovie(){
       let stored = window.localStorage.getItem('movie');
-      // Separo lo que hay almacenado en localStorage y le borro el texto La película <b>, quedándome con un array grande, que en cada posición contiene lo siguiente
-      // Volver al futuro</b> se puede ver por <b>Amazon Prime</b>," y así por cada película que haya cargado
-      let firstPartOfStoredMovies = stored?.split('La película <b>');
+      if (!stored) return;
+      
+      const movieEntries = stored.split(',').map(item => {
+        // Extraer el nombre de la película
+        const nameMatch = item.match(/La película <b>(.*?)<\/b>/);
+        // Extraer la plataforma
+        const platformMatch = item.match(/se puede ver por <b>(.*?)<\/b>/);
+        
+        if (nameMatch && platformMatch) {
+          return {
+            name: nameMatch[1],
+            platform: platformMatch[1]
+          };
+        }
+        return null;
+      }).filter(entry => entry);
 
-      // Vuelvo a separar el resultado y le saco el texto </b> se puede ver por, quedándome con un array grande, que en cada posición contiene un array con dos valores,
-      // el nombre de la película, y la plataforma, por ejemplo ['Volver al futuro', ' <b>Amazon Prime</b>, ']
-      let secondPartOfStoredMovies = firstPartOfStoredMovies?.map(element => {
-          return element.split('</b> se puede ver por');
-        })
-      //Aca le saco lo último y ya me quedo solo con un array que contiene únicamente el nombre de las películas
-      let movie = secondPartOfStoredMovies?.map(element => {
-        return (element[0]?.split('<b>'));
-      })
-      let platform = secondPartOfStoredMovies?.map(element => {
-        return (element[1]?.split('<b>')[1]?.split('</b>')[0]);
-      })
-
-      movie?.map((element, index) => {
-        if(element !== undefined && platform !== undefined && element[0] !== '')
-            this.MOVIE_DATA.push({movieName:element[0], platformName: platform[index]})
-      })
+      movieEntries.forEach(entry => {
+        if (entry) {
+          this.MOVIE_DATA.push(new Activity(entry.name, entry.platform));
+        }
+      });
   }
 
   getSeries(){
     let stored = window.localStorage.getItem('series');
-    // Separo lo que hay almacenado en localStorage y le borro el texto La película <b>, quedándome con un array grande, que en cada posición contiene lo siguiente
-    // Volver al futuro</b> se puede ver por <b>Amazon Prime</b>," y así por cada película que haya cargado
-    let firstPartOfStoredSeries = stored?.split('La serie <b>');
+    if (!stored) return;
+    
+    const seriesEntries = stored.split(',').map(item => {
+      // Extraer el nombre de la serie
+      const nameMatch = item.match(/La serie <b>(.*?)<\/b>/);
+      // Extraer la plataforma
+      const platformMatch = item.match(/se puede ver por <b>(.*?)<\/b>/);
+      
+      if (nameMatch && platformMatch) {
+        return {
+          name: nameMatch[1],
+          platform: platformMatch[1]
+        };
+      }
+      return null;
+    }).filter(entry => entry);
 
-    // Vuelvo a separar el resultado y le saco el texto </b> se puede ver por, quedándome con un array grande, que en cada posición contiene un array con dos valores,
-    // el nombre de la película, y la plataforma, por ejemplo ['Volver al futuro', ' <b>Amazon Prime</b>, ']
-    let secondPartOfStoredSeries = firstPartOfStoredSeries?.map(element => {
-      return element.split('</b> se puede ver por');
-    })
-    //Aca le saco lo último y ya me quedo solo con un array que contiene únicamente el nombre de las películas
-    let movie = secondPartOfStoredSeries?.map(element => {
-      return (element[0]?.split('<b>'));
-    })
-    let platform = secondPartOfStoredSeries?.map(element => {
-      return (element[1]?.split('<b>')[1]?.split('</b>')[0]);
-    })
-
-    movie?.map((element, index) => {
-      if(element !== undefined && platform !== undefined && element[0] !== '')
-        this.SERIES_DATA.push({seriesName:element[0], platformName: platform[index]})
-    })
+    seriesEntries.forEach(entry => {
+      if (entry) {
+        this.SERIES_DATA.push(new Activity(entry.name, entry.platform));
+      }
+    });
   }
 
   getFood(){
-  // this.upperCaseTitle('prueba');
-    let storedFood = window.localStorage.getItem('food')?.split(',');
-    storedFood?.map((element) => {
-      if(element !== undefined && element !== '') {
-      // element = this.upperCaseTitle(element);
-      this.FOOD_DATA.push({food:element, details: ''});
+    let stored = window.localStorage.getItem('food');
+    let storedDetails = window.localStorage.getItem('foodDetails') ? JSON.parse(window.localStorage.getItem('foodDetails') || '{}') : {};
+    
+    if (!stored) return;
+    
+    const foods = stored.split(',').map(item => {
+      const match = item.match(/La comida es <b>(.*?)<\/b>/);
+      const name = match ? match[1] : null;
+      return {
+        name,
+        details: storedDetails[name || ''] || ''
+      };
+    }).filter(food => food.name);
 
+    foods.forEach(food => {
+      if (food.name) {
+        this.FOOD_DATA.push(new Activity(food.name, food.details));
       }
-    })
+    });
   }
 
   getPlans(){
-    let storedPlans = window.localStorage.getItem('plan')?.split(',');
-    storedPlans?.map((element) => {
-      if(element !== undefined && element !== '') {
-        this.PLAN_DATA.push({plan:element, details: ''});
+    let stored = window.localStorage.getItem('plan');
+    let storedDetails = window.localStorage.getItem('planDetails') ? JSON.parse(window.localStorage.getItem('planDetails') || '{}') : {};
+    
+    if (!stored) return;
+    
+    const plans = stored.split(',').map(item => {
+      const match = item.match(/El plan es <b>(.*?)<\/b>/);
+      const name = match ? match[1] : null;
+      return {
+        name,
+        details: storedDetails[name || ''] || ''
+      };
+    }).filter(plan => plan.name);
 
+    plans.forEach(plan => {
+      if (plan.name) {
+        this.PLAN_DATA.push(new Activity(plan.name, plan.details));
       }
-    })
+    });
+  }
+
+  saveDetails(activity: string, name: string, details: string) {
+    let storageKey = '';
+    let currentDetails = {};
+    
+    switch(activity) {
+      case 'película':
+        storageKey = 'movieDetails';
+        break;
+      case 'serie':
+        storageKey = 'seriesDetails';
+        break;
+      case 'comida':
+        storageKey = 'foodDetails';
+        break;
+      case 'plan':
+        storageKey = 'planDetails';
+        break;
+    }
+
+    try {
+      currentDetails = JSON.parse(localStorage.getItem(storageKey) || '{}');
+    } catch {
+      currentDetails = {};
+    }
+
+    currentDetails = { ...currentDetails, [name]: details };
+    localStorage.setItem(storageKey, JSON.stringify(currentDetails));
   }
 
   // upperCaseTitle(title:string){
