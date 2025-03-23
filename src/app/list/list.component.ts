@@ -72,43 +72,43 @@ export class ListComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.saveDetails(activity, name, result);
-        this.updateDataSource(activity, name, result);
+        // this.updateDataSource(activity, name, result);
       }
     });
   }
 
-  updateDataSource(activity: string, name: string, details: string) {
-    switch(activity) {
-      case 'película':
-        const movieIndex = this.MOVIE_DATA.findIndex(movie => movie.name === name);
-        if (movieIndex !== -1) {
-          this.MOVIE_DATA[movieIndex].information = details;
-          this.movieDataSource.data = [...this.MOVIE_DATA];
-        }
-        break;
-      case 'serie':
-        const serieIndex = this.SERIES_DATA.findIndex(serie => serie.name === name);
-        if (serieIndex !== -1) {
-          this.SERIES_DATA[serieIndex].information = details;
-          this.seriesDataSource.data = [...this.SERIES_DATA];
-        }
-        break;
-      case 'comida':
-        const foodIndex = this.FOOD_DATA.findIndex(food => food.name === name);
-        if (foodIndex !== -1) {
-          this.FOOD_DATA[foodIndex].information = details;
-          this.foodDataSource.data = [...this.FOOD_DATA];
-        }
-        break;
-      case 'plan':
-        const planIndex = this.PLAN_DATA.findIndex(plan => plan.name === name);
-        if (planIndex !== -1) {
-          this.PLAN_DATA[planIndex].information = details;
-          this.planDataSource.data = [...this.PLAN_DATA];
-        }
-        break;
-    }
-  }
+  // updateDataSource(activity: string, name: string, details: string) {
+  //   switch(activity) {
+  //     case 'película':
+  //       const movieIndex = this.MOVIE_DATA.findIndex(movie => movie.name === name);
+  //       if (movieIndex !== -1) {
+  //         this.MOVIE_DATA[movieIndex].information = details;
+  //         this.movieDataSource.data = [...this.MOVIE_DATA];
+  //       }
+  //       break;
+  //     case 'serie':
+  //       const serieIndex = this.SERIES_DATA.findIndex(serie => serie.name === name);
+  //       if (serieIndex !== -1) {
+  //         this.SERIES_DATA[serieIndex].information = details;
+  //         this.seriesDataSource.data = [...this.SERIES_DATA];
+  //       }
+  //       break;
+  //     case 'comida':
+  //       const foodIndex = this.FOOD_DATA.findIndex(food => food.name === name);
+  //       if (foodIndex !== -1) {
+  //         this.FOOD_DATA[foodIndex].information = details;
+  //         this.foodDataSource.data = [...this.FOOD_DATA];
+  //       }
+  //       break;
+  //     case 'plan':
+  //       const planIndex = this.PLAN_DATA.findIndex(plan => plan.name === name);
+  //       if (planIndex !== -1) {
+  //         this.PLAN_DATA[planIndex].information = details;
+  //         this.planDataSource.data = [...this.PLAN_DATA];
+  //       }
+  //       break;
+  //   }
+  // }
 
   getMovie(){
       let stored = window.localStorage.getItem('movie');
@@ -131,7 +131,7 @@ export class ListComponent implements OnInit {
 
       movieEntries.forEach(entry => {
         if (entry) {
-          this.MOVIE_DATA.push(new Activity(entry.name, entry.platform));
+          // this.MOVIE_DATA.push(new Activity(entry.name, entry.platform));
         }
       });
   }
@@ -157,7 +157,7 @@ export class ListComponent implements OnInit {
 
     seriesEntries.forEach(entry => {
       if (entry) {
-        this.SERIES_DATA.push(new Activity(entry.name, entry.platform));
+        // this.SERIES_DATA.push(new Activity(entry.name, entry.platform));
       }
     });
   }
@@ -179,7 +179,7 @@ export class ListComponent implements OnInit {
 
     foods.forEach(food => {
       if (food.name) {
-        this.FOOD_DATA.push(new Activity(food.name, food.details));
+        // this.FOOD_DATA.push(new Activity(food.name, food.details));
       }
     });
   }
@@ -201,7 +201,7 @@ export class ListComponent implements OnInit {
 
     plans.forEach(plan => {
       if (plan.name) {
-        this.PLAN_DATA.push(new Activity(plan.name, plan.details));
+        // this.PLAN_DATA.push(new Activity(plan.name, plan.details));
       }
     });
   }
