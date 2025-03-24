@@ -82,23 +82,9 @@ export class ListComponent implements OnInit {
     });
   }
 
-
-  // getMovie(){
-  //   this.firebaseService.getData().subscribe(
-  //     (data) => {
-  //       this.data.data.forEach(element => console.log(element[0].type));
-  //     },
-  //     (error) => {
-  //       console.error('Error al obtener los datos', error);
-  //     }
-  //   );
-  // }
-
   getMovie() {
     this.data.forEach(element => {
-      // console.log(element)
       if (element.type === 'pelicula') {
-        console.log(element);  // Muestra los elementos de tipo 'pelicula'
       }
     });
   }
