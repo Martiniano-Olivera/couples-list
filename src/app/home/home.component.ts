@@ -75,22 +75,22 @@ buildData() {
   const newData: Activity[] = [];
 
   if (this.movieInput && this.selectedPlatform !== this.DEFAULT_PLATFORM_TEXT) {
-    newData.push({ type: 'pelicula', nombre: this.movieInput, plataforma: this.selectedPlatform });
+    newData.push({ type: 'pelicula', name: this.movieInput, platform: this.selectedPlatform });
     this.resetMovieInputs();
   }
 
   if (this.serieInput && this.selectedSeriesPlatform !== this.DEFAULT_PLATFORM_TEXT) {
-    newData.push({ type: 'serie', nombre: this.serieInput, plataforma: this.selectedSeriesPlatform });
+    newData.push({ type: 'serie', name: this.serieInput, platform: this.selectedSeriesPlatform });
     this.resetSeriesInputs();
   }
 
   if (this.foodInput) {
-    newData.push({ type: 'comida', nombre: this.foodInput });
+    newData.push({ type: 'comida', name: this.foodInput });
     this.foodInput = '';
   }
 
   if (this.planInput) {
-    newData.push({ type: 'plan', nombre: this.planInput });
+    newData.push({ type: 'plan', name: this.planInput });
     this.planInput = '';
   }
 

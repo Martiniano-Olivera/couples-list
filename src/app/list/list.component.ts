@@ -4,7 +4,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DetailsComponent } from '../details/details.component';
-import {Activity} from "../shared/classes/activity";
+import {Activity, ActivityNameAndPlatform, activityType} from "../shared/classes/activity";
 import { FirebaseService } from '../services/firebase.service';
 
 
@@ -19,10 +19,10 @@ import { FirebaseService } from '../services/firebase.service';
 
 export class ListComponent implements OnInit {
 
-  MOVIE_DATA: Activity[] = [];
-  SERIES_DATA: Activity[] = [];
-  FOOD_DATA: Activity[] = [];
-  PLAN_DATA: Activity[] = [];
+  MOVIE_DATA: ActivityNameAndPlatform[] = [];
+  SERIES_DATA: ActivityNameAndPlatform[] = [];
+  FOOD_DATA: ActivityNameAndPlatform[] = [];
+  PLAN_DATA: ActivityNameAndPlatform[] = [];
   data:Activity[] = [];
   displayedColumnsForFood : string[] = ['food', 'details'];
   displayedColumnsForMovies : string[] = ['movie', 'platformName'];
@@ -38,16 +38,9 @@ export class ListComponent implements OnInit {
   ngOnInit() {
       this.firebaseService.getData().subscribe((data => {
         this.data = data;
-        this.getMovie();
+        this.getData();
       })
     )
-  }
-
-  loadTableData() {
-    this.getMovie();
-    this.getSeries();
-    this.getFood();
-    this.getPlans();
   }
 
   filterFood(event: Event) {
@@ -82,74 +75,19 @@ export class ListComponent implements OnInit {
     });
   }
 
-  getMovie() {
+  getData() {
     this.data.forEach(element => {
-      if (element.type === 'pelicula') {
+      if (element.type === activityType.MOVIE) {
+        this.MOVIE_DATA.push({name: element.name, platform: element.platform});
       }
-    });
-  }
-
-  getSeries(){
-    let stored = window.localStorage.getItem('series');
-    if (!stored) return;
-    
-    const seriesEntries = stored.split(',').map(item => {
-      const nameMatch = item.match(/La serie <b>(.*?)<\/b>/);
-      const platformMatch = item.match(/se puede ver por <b>(.*?)<\/b>/);
-      
-      if (nameMatch && platformMatch) {
-        return {
-          name: nameMatch[1],
-          platform: platformMatch[1]
-        };
+      if (element.type === activityType.SERIE) {
+        this.SERIES_DATA.push({name: element.name, platform: element.platform});
       }
-      return null;
-    }).filter(entry => entry);
-
-    seriesEntries.forEach(entry => {
-      if (entry) {
+      if (element.type === activityType.FOOD) {
+        this.FOOD_DATA.push({name: element.name});
       }
-    });
-  }
-
-  getFood(){
-    let stored = window.localStorage.getItem('food');
-    let storedDetails = window.localStorage.getItem('foodDetails') ? JSON.parse(window.localStorage.getItem('foodDetails') || '{}') : {};
-    
-    if (!stored) return;
-    
-    const foods = stored.split(',').map(item => {
-      const match = item.match(/La comida es <b>(.*?)<\/b>/);
-      const name = match ? match[1] : null;
-      return {
-        name,
-        details: storedDetails[name || ''] || ''
-      };
-    }).filter(food => food.name);
-
-    foods.forEach(food => {
-      if (food.name) {
-      }
-    });
-  }
-
-  getPlans(){
-    let stored = window.localStorage.getItem('plan');
-    let storedDetails = window.localStorage.getItem('planDetails') ? JSON.parse(window.localStorage.getItem('planDetails') || '{}') : {};
-    
-    if (!stored) return;
-    
-    const plans = stored.split(',').map(item => {
-      const match = item.match(/El plan es <b>(.*?)<\/b>/);
-      const name = match ? match[1] : null;
-      return {
-        name,
-        details: storedDetails[name || ''] || ''
-      };
-    }).filter(plan => plan.name);
-
-    plans.forEach(plan => {
-      if (plan.name) {
+      if (element.type === activityType.PLAN) {
+        this.PLAN_DATA.push({name: element.name});
       }
     });
   }

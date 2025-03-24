@@ -1,5 +1,14 @@
 export interface Activity {
   type: 'pelicula' | 'serie' | 'comida' | 'plan';
-  nombre: string;
-  plataforma?: string; // Opcional, solo aplica para películas y series
+  name: string;
+  platform?: string; // Opcional, solo aplica para películas y series
+}
+
+export type ActivityNameAndPlatform = Pick<Activity, 'name' | 'platform'>;
+
+export enum activityType{
+  PLAN = 'plan',
+  FOOD = 'comida', 
+  SERIE = 'serie',
+  MOVIE = 'pelicula',   
 }
