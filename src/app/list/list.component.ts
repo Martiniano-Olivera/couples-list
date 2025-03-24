@@ -5,6 +5,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DetailsComponent } from '../details/details.component';
 import {Activity} from "../shared/classes/activity";
+import { FirebaseService } from '../services/firebase.service';
 
 
 @Component({
@@ -22,6 +23,7 @@ export class ListComponent implements OnInit {
   SERIES_DATA: Activity[] = [];
   FOOD_DATA: Activity[] = [];
   PLAN_DATA: Activity[] = [];
+  data:Activity[] = [];
   displayedColumnsForFood : string[] = ['food', 'details'];
   displayedColumnsForMovies : string[] = ['movie', 'platformName'];
   displayedColumnsForSeries : string[] = ['series', 'platformName'];
@@ -31,10 +33,14 @@ export class ListComponent implements OnInit {
   seriesDataSource = new MatTableDataSource(this.SERIES_DATA);
   planDataSource = new MatTableDataSource(this.PLAN_DATA);
 
-  constructor(private iMatDialog: MatDialog){}
+  constructor(private iMatDialog: MatDialog, private firebaseService: FirebaseService){}
 
   ngOnInit() {
-    this.loadTableData();
+      this.firebaseService.getData().subscribe((data => {
+        this.data = data;
+        this.getMovie();
+      })
+    )
   }
 
   loadTableData() {
@@ -72,68 +78,29 @@ export class ListComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.saveDetails(activity, name, result);
-        // this.updateDataSource(activity, name, result);
       }
     });
   }
 
-  // updateDataSource(activity: string, name: string, details: string) {
-  //   switch(activity) {
-  //     case 'película':
-  //       const movieIndex = this.MOVIE_DATA.findIndex(movie => movie.name === name);
-  //       if (movieIndex !== -1) {
-  //         this.MOVIE_DATA[movieIndex].information = details;
-  //         this.movieDataSource.data = [...this.MOVIE_DATA];
-  //       }
-  //       break;
-  //     case 'serie':
-  //       const serieIndex = this.SERIES_DATA.findIndex(serie => serie.name === name);
-  //       if (serieIndex !== -1) {
-  //         this.SERIES_DATA[serieIndex].information = details;
-  //         this.seriesDataSource.data = [...this.SERIES_DATA];
-  //       }
-  //       break;
-  //     case 'comida':
-  //       const foodIndex = this.FOOD_DATA.findIndex(food => food.name === name);
-  //       if (foodIndex !== -1) {
-  //         this.FOOD_DATA[foodIndex].information = details;
-  //         this.foodDataSource.data = [...this.FOOD_DATA];
-  //       }
-  //       break;
-  //     case 'plan':
-  //       const planIndex = this.PLAN_DATA.findIndex(plan => plan.name === name);
-  //       if (planIndex !== -1) {
-  //         this.PLAN_DATA[planIndex].information = details;
-  //         this.planDataSource.data = [...this.PLAN_DATA];
-  //       }
-  //       break;
-  //   }
+
+  // getMovie(){
+  //   this.firebaseService.getData().subscribe(
+  //     (data) => {
+  //       this.data.data.forEach(element => console.log(element[0].type));
+  //     },
+  //     (error) => {
+  //       console.error('Error al obtener los datos', error);
+  //     }
+  //   );
   // }
 
-  getMovie(){
-      let stored = window.localStorage.getItem('movie');
-      if (!stored) return;
-      
-      const movieEntries = stored.split(',').map(item => {
-        // Extraer el nombre de la película
-        const nameMatch = item.match(/La película <b>(.*?)<\/b>/);
-        // Extraer la plataforma
-        const platformMatch = item.match(/se puede ver por <b>(.*?)<\/b>/);
-        
-        if (nameMatch && platformMatch) {
-          return {
-            name: nameMatch[1],
-            platform: platformMatch[1]
-          };
-        }
-        return null;
-      }).filter(entry => entry);
-
-      movieEntries.forEach(entry => {
-        if (entry) {
-          // this.MOVIE_DATA.push(new Activity(entry.name, entry.platform));
-        }
-      });
+  getMovie() {
+    this.data.forEach(element => {
+      // console.log(element)
+      if (element.type === 'pelicula') {
+        console.log(element);  // Muestra los elementos de tipo 'pelicula'
+      }
+    });
   }
 
   getSeries(){
@@ -141,9 +108,7 @@ export class ListComponent implements OnInit {
     if (!stored) return;
     
     const seriesEntries = stored.split(',').map(item => {
-      // Extraer el nombre de la serie
       const nameMatch = item.match(/La serie <b>(.*?)<\/b>/);
-      // Extraer la plataforma
       const platformMatch = item.match(/se puede ver por <b>(.*?)<\/b>/);
       
       if (nameMatch && platformMatch) {
@@ -157,7 +122,6 @@ export class ListComponent implements OnInit {
 
     seriesEntries.forEach(entry => {
       if (entry) {
-        // this.SERIES_DATA.push(new Activity(entry.name, entry.platform));
       }
     });
   }
@@ -179,7 +143,6 @@ export class ListComponent implements OnInit {
 
     foods.forEach(food => {
       if (food.name) {
-        // this.FOOD_DATA.push(new Activity(food.name, food.details));
       }
     });
   }
@@ -201,7 +164,6 @@ export class ListComponent implements OnInit {
 
     plans.forEach(plan => {
       if (plan.name) {
-        // this.PLAN_DATA.push(new Activity(plan.name, plan.details));
       }
     });
   }
@@ -235,12 +197,5 @@ export class ListComponent implements OnInit {
     localStorage.setItem(storageKey, JSON.stringify(currentDetails));
   }
 
-  // upperCaseTitle(title:string){
-  //   let arrayOfWords = title.split('');
-  //   arrayOfWords = arrayOfWords[0].toUpperCase() + arrayOfWords.slice(1).join('');
-  //   // let finalWord  = arrayOfWords + arrayOfWords.slice(1).join('');
-  //   console.log(arrayOfWords);
-  //   // return finalWord;
-  // }
 
 }

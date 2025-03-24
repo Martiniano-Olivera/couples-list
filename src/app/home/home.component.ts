@@ -1,18 +1,18 @@
 import Swal from 'sweetalert2'
-import { Component, OnDestroy } from '@angular/core';
+import { Component, /* OnDestroy */ } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {Activity} from "../shared/classes/activity";
 import { ListComponent } from '../list/list.component';
 import { FirebaseService } from '../services/firebase.service';
 import {MatDialog, MatDialogModule} from '@angular/material/dialog';
-import { BehaviorSubject } from 'rxjs';
+// import { BehaviorSubject } from 'rxjs';
 @Component({
   selector: 'app-home',
   imports: [FormsModule, MatDialogModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
-export class HomeComponent implements OnDestroy{
+export class HomeComponent{
 foodInput:string = '';
 planInput:string = '';
 movieInput:string = '';
@@ -23,7 +23,7 @@ selectedSeriesPlatform = 'Seleccioná en qué plataforma se encuentra';
 user: any;
 canSearch: boolean = false;
 isDropdownOpen = false;
-data$ = new BehaviorSubject<Activity[]>([]); // Observable que almacena los datos
+// data$ = new BehaviorSubject<Activity[]>([]); // Observable que almacena los datos
 streamingServices=[
   {
     name: 'Netflix',
@@ -54,9 +54,9 @@ streamingServices=[
 
 constructor(private iMatDialog: MatDialog, private firebaseService: FirebaseService){}
 
-ngOnDestroy() {
-  this.data$.unsubscribe(); // Limpia la suscripción cuando el componente se destruye
-}
+// ngOnDestroy() {
+//   this.data$.unsubscribe(); // Limpia la suscripción cuando el componente se destruye
+// }
 
   resetMovieInputs() {
     this.movieInput = '';
@@ -77,12 +77,18 @@ ngOnDestroy() {
     }
   }
 
-buildData(): Activity[] {
+buildData() {
   const newData: Activity[] = [];
+  // let newData:Activity = {
+  //   type: '',
+  //   nombre: '',
+  //   plataforma: ''
+  // }
 
   if (this.movieInput && this.selectedPlatform !== this.DEFAULT_PLATFORM_TEXT) {
     newData.push({ type: 'pelicula', nombre: this.movieInput, plataforma: this.selectedPlatform });
     this.resetMovieInputs();
+    // newData.type
   }
 
   if (this.serieInput && this.selectedSeriesPlatform !== this.DEFAULT_PLATFORM_TEXT) {
@@ -103,23 +109,45 @@ buildData(): Activity[] {
   return newData;
 }
 
-save() {
-  const newData = this.buildData();
-  this.data$.next(newData); // Actualiza el BehaviorSubject
-  if (newData.length === 0) {
-    Swal.fire({
-      icon: 'warning',
-      title: 'No hay datos para guardar',
-      showConfirmButton: false,
-      timer: 1500
-    });
-    return;
-  }
+// save() {
+//   const newData = this.buildData();
+//   // this.data$.next(newData); // Actualiza el BehaviorSubject
 
-  this.firebaseService.addData({ data: newData }).subscribe({
-    next: () => this.showSuccessMessage(),
-    error: (err) => this.showErrorMessage(err)
-  });
+//   if (newData.length === 0) {
+//     Swal.fire({
+//       icon: 'warning',
+//       title: 'No hay datos para guardar',
+//       showConfirmButton: false,
+//       timer: 1500
+//     });
+//     return;
+//   }
+
+//   this.firebaseService.addData({ ...newData }).subscribe({
+//     next: () => this.showSuccessMessage(),
+//     error: (err) => this.showErrorMessage(err)
+//   });
+// }
+
+
+save() {
+  // const activities = [
+  //   { type: 'pelicula', plataforma: 'hbo', nombre: 'harry potter' },
+  //   { type: 'serie', plataforma: 'Disney +', nombre: 'robin' },
+  //   { type: 'comida', nombre: 'pizza' },
+  //   { type: 'plan', nombre: 'playa' },
+  // ];
+
+  let activities = this.buildData();
+
+  this.firebaseService.saveData(activities).subscribe(
+    (response) => {
+      console.log('Datos guardados con éxito', response);
+    },
+    (error) => {
+      console.error('Error al guardar los datos', error);
+    }
+  );
 }
 
   toggleDropdown() {
