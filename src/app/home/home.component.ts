@@ -1,25 +1,30 @@
 import Swal from 'sweetalert2'
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {Activity} from "../shared/classes/activity";
 import { ListComponent } from '../list/list.component';
 import { FirebaseService } from '../services/firebase.service';
 import {MatDialog, MatDialogModule} from '@angular/material/dialog';
+import { BehaviorSubject } from 'rxjs';
 @Component({
   selector: 'app-home',
   imports: [FormsModule, MatDialogModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
-export class HomeComponent implements OnInit{
-movieInput:string = '';
+export class HomeComponent{
+data: Activity[] = [];
 foodInput:string = '';
 planInput:string = '';
+movieInput:string = '';
 serieInput: string  = '';
+DEFAULT_PLATFORM_TEXT = 'Seleccioná en qué plataforma se encuentra';
 selectedPlatform = 'Seleccioná en qué plataforma se encuentra';
 selectedSeriesPlatform = 'Seleccioná en qué plataforma se encuentra';
-isDropdownOpen = false;
 user: any;
+canSearch: boolean = false;
+isDropdownOpen = false;
+data$ = new BehaviorSubject<Activity[]>([]); // Observable que almacena los datos
 streamingServices=[
   {
     name: 'Netflix',
@@ -50,49 +55,116 @@ streamingServices=[
 
 constructor(private iMatDialog: MatDialog, private firebaseService: FirebaseService){}
 
-ngOnInit(): void {
+  resetMovieInputs() {
+    this.movieInput = '';
+    this.selectedPlatform = this.DEFAULT_PLATFORM_TEXT;
+  }
 
+  resetSeriesInputs() {
+    this.serieInput = '';
+    this.selectedSeriesPlatform = this.DEFAULT_PLATFORM_TEXT;
+  }
+
+  ngDoCheck(): void {
+    if (this.movieInput.trim() !== '' || this.serieInput.trim() !== '' || this.foodInput.trim() !== '' || this.planInput.trim() !== '') {
+      this.canSearch = true;
+    }
+    if (this.movieInput.trim() === '' && this.serieInput.trim() === '' && this.foodInput.trim() === '' && this.planInput.trim() === '') {
+      this.canSearch = false;
+    }
+  }
+
+buildData(): Activity[] {
+  const newData: Activity[] = [];
+
+  if (this.movieInput && this.selectedPlatform !== this.DEFAULT_PLATFORM_TEXT) {
+    newData.push({ type: 'pelicula', nombre: this.movieInput, plataforma: this.selectedPlatform });
+    this.resetMovieInputs();
+  }
+
+  if (this.serieInput && this.selectedSeriesPlatform !== this.DEFAULT_PLATFORM_TEXT) {
+    newData.push({ type: 'serie', nombre: this.serieInput, plataforma: this.selectedSeriesPlatform });
+    this.resetSeriesInputs();
+  }
+
+  if (this.foodInput) {
+    newData.push({ type: 'comida', nombre: this.foodInput });
+    this.foodInput = '';
+  }
+
+  if (this.planInput) {
+    newData.push({ type: 'plan', nombre: this.planInput });
+    this.planInput = '';
+  }
+
+  return newData;
 }
 
+// save(){
 
+//   if (this.movieInput !== '' && this.selectedPlatform !== this.DEFAULT_PLATFORM_TEXT) {
+//     this.data.push({
+//       type : 'pelicula',
+//       nombre : this.movieInput,
+//       plataforma : this.selectedPlatform,
+  
+//     })
+//     this.movieInput='';
+//     this.selectedPlatform = this.DEFAULT_PLATFORM_TEXT;
+//   }
+//   if (this.serieInput !== '' && this.selectedSeriesPlatform !== this.DEFAULT_PLATFORM_TEXT) {
+//     this.data.push({
+//     type : 'serie',
+//     nombre : this.serieInput,
+//     plataforma : this.selectedSeriesPlatform
+//     })
+    
+//     this.serieInput='';
+//     this.selectedSeriesPlatform = this.DEFAULT_PLATFORM_TEXT;
+//   }
+//   if (this.foodInput !== '') {
+//     this.data.push({
+//     type : 'comida',
+//     nombre : this.foodInput
+//     })
+    
+//     this.foodInput='';
+//   }
+//   if (this.planInput !== '') {
+//     this.data.push({
+//     type : 'plan',
+//     nombre : this.planInput
+//     })
+    
+//     this.planInput='';
+//   }
 
-save(){
-  let data: Activity = {} as Activity;
+//   this.firebaseService.addData({data: this.data}).subscribe({
+//     next: () => {
+//       this.showSuccessMessage();
+//     },
+//     error: (err) => {
+//       this.showErrorMessage(err);
+//     }
+//   });
+// }
 
-  if (this.movieInput !== '' && this.selectedPlatform !== 'Seleccioná en qué plataforma se encuentra') {
-    data.type = 'pelicula'
-    data.nombre = this.movieInput;
-    data.plataforma = this.selectedPlatform;
-    this.movieInput='';
-    this.selectedPlatform = 'Seleccioná en qué plataforma se encuentra';
-  }
-  if (this.serieInput !== '' && this.selectedSeriesPlatform !== 'Seleccioná en qué plataforma se encuentra') {
-    data.type = 'serie'
-    data.nombre = this.serieInput;
-    data.plataforma = this.selectedSeriesPlatform;
-    this.serieInput='';
-    this.selectedSeriesPlatform = 'Seleccioná en qué plataforma se encuentra';
-  }
-  if (this.foodInput !== '') {
-    data.type = 'comida'
-    data.nombre = this.foodInput;
-    this.foodInput='';
-  }
-  if (this.planInput !== '') {
-    data.type = 'plan';
-    data.nombre = this.planInput;
-    this.planInput='';
+save() {
+  this.data = this.buildData();
+  this.data$.next(this.data); // Actualiza el BehaviorSubject
+  if (this.data.length === 0) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'No hay datos para guardar',
+      showConfirmButton: false,
+      timer: 1500
+    });
+    return;
   }
 
-  this.firebaseService.addData(data).subscribe({
-    next: (res) => {
-      console.log('Datos subidos exitosamente:', res);
-      this.showSuccessMessage();
-    },
-    error: (err) => {
-      console.error('Error al subir los datos:', err);
-      this.showErrorMessage();
-    }
+  this.firebaseService.addData({ data: this.data }).subscribe({
+    next: () => this.showSuccessMessage(),
+    error: (err) => this.showErrorMessage(err)
   });
 }
 
@@ -100,10 +172,10 @@ save(){
     this.isDropdownOpen = !this.isDropdownOpen;
   }
 
-showErrorMessage(){
+showErrorMessage( error:string){
   Swal.fire({
     icon: "error",
-    title: `Error al subir los datos.`,
+    title: `Error al subir los datos. ${error}`,
     showConfirmButton: false,
     timer: 1500
   });

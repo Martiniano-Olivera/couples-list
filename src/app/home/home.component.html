@@ -62,7 +62,6 @@
     <div class="w-100 d-flex justify-content-evenly">
         <button class="btn btn-outline-secondary" type="button" (click)="chooseRandom()">Elegir al azar</button>
         <button class="btn btn-outline-secondary" type="button" (click)="viewList()">Ver lista</button>
-        <!-- <button class="btn btn-outline-secondary" type="button" (click)="onSubmit()">Cargar contenido</button> -->
-        <button class="btn btn-outline-secondary" type="button" (click)="save()">Cargar contenido</button>
+        <button class="btn btn-outline-secondary" type="button" [disabled]="!canSearch" (click)="save()">Cargar contenido</button>
     </div>
 </div>
