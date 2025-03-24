@@ -13,7 +13,6 @@ import { BehaviorSubject } from 'rxjs';
   styleUrl: './home.component.scss',
 })
 export class HomeComponent{
-data: Activity[] = [];
 foodInput:string = '';
 planInput:string = '';
 movieInput:string = '';
@@ -100,59 +99,10 @@ buildData(): Activity[] {
   return newData;
 }
 
-// save(){
-
-//   if (this.movieInput !== '' && this.selectedPlatform !== this.DEFAULT_PLATFORM_TEXT) {
-//     this.data.push({
-//       type : 'pelicula',
-//       nombre : this.movieInput,
-//       plataforma : this.selectedPlatform,
-  
-//     })
-//     this.movieInput='';
-//     this.selectedPlatform = this.DEFAULT_PLATFORM_TEXT;
-//   }
-//   if (this.serieInput !== '' && this.selectedSeriesPlatform !== this.DEFAULT_PLATFORM_TEXT) {
-//     this.data.push({
-//     type : 'serie',
-//     nombre : this.serieInput,
-//     plataforma : this.selectedSeriesPlatform
-//     })
-    
-//     this.serieInput='';
-//     this.selectedSeriesPlatform = this.DEFAULT_PLATFORM_TEXT;
-//   }
-//   if (this.foodInput !== '') {
-//     this.data.push({
-//     type : 'comida',
-//     nombre : this.foodInput
-//     })
-    
-//     this.foodInput='';
-//   }
-//   if (this.planInput !== '') {
-//     this.data.push({
-//     type : 'plan',
-//     nombre : this.planInput
-//     })
-    
-//     this.planInput='';
-//   }
-
-//   this.firebaseService.addData({data: this.data}).subscribe({
-//     next: () => {
-//       this.showSuccessMessage();
-//     },
-//     error: (err) => {
-//       this.showErrorMessage(err);
-//     }
-//   });
-// }
-
 save() {
-  this.data = this.buildData();
-  this.data$.next(this.data); // Actualiza el BehaviorSubject
-  if (this.data.length === 0) {
+  const newData = this.buildData();
+  this.data$.next(newData); // Actualiza el BehaviorSubject
+  if (newData.length === 0) {
     Swal.fire({
       icon: 'warning',
       title: 'No hay datos para guardar',
@@ -162,7 +112,7 @@ save() {
     return;
   }
 
-  this.firebaseService.addData({ data: this.data }).subscribe({
+  this.firebaseService.addData({ data: newData }).subscribe({
     next: () => this.showSuccessMessage(),
     error: (err) => this.showErrorMessage(err)
   });
