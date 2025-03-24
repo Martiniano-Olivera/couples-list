@@ -1,5 +1,5 @@
 import Swal from 'sweetalert2'
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {Activity} from "../shared/classes/activity";
 import { ListComponent } from '../list/list.component';
@@ -12,7 +12,7 @@ import { BehaviorSubject } from 'rxjs';
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
-export class HomeComponent{
+export class HomeComponent implements OnDestroy{
 foodInput:string = '';
 planInput:string = '';
 movieInput:string = '';
@@ -53,6 +53,10 @@ streamingServices=[
 
 
 constructor(private iMatDialog: MatDialog, private firebaseService: FirebaseService){}
+
+ngOnDestroy() {
+  this.data$.unsubscribe(); // Limpia la suscripción cuando el componente se destruye
+}
 
   resetMovieInputs() {
     this.movieInput = '';
